@@ -1,16 +1,11 @@
-//
-//  TableTableViewController.swift
-//  TaskManager
-//
-//  Created by Łukasz Cettler on 23/07/2022.
-//
-
 import UIKit
 
 class TableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        AppData.addData()
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
