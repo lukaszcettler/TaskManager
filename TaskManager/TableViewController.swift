@@ -1,40 +1,46 @@
 import UIKit
 
-class TableViewController: UITableViewController {
+class TableViewController: UITableViewController, UITextFieldDelegate {
 
+    @IBOutlet var headerView: UIView!
+    @IBOutlet weak var addNewTask: UITextField!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         AppData.addData()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
-    }
-
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        self.tableView.tableHeaderView = headerView
+        self.addNewTask.delegate = self
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return AppData.tasks.count
     }
 
-    /*
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell_id", for: indexPath)
+        let simpleTask = AppData.tasks[indexPath.row]
+        
+        let attributedString = NSMutableAttributedString(string: simpleTask.name)
+        
+        if simpleTask.status{
+            cell.backgroundColor = UIColor.lightGray
+            cell.accessoryType = UITableViewCell.AccessoryType.checkmark
+            attributedString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2.0, range: NSMakeRange(0, attributedString.length))
+        }else{
+            cell.backgroundColor = UIColor.white
+            cell.accessoryType = UITableViewCell.AccessoryType.none
+            attributedString.removeAttribute(NSAttributedString.Key.strikethroughStyle, range: NSMakeRange(0, attributedString.length))
+        }
+        
+        cell.textLabel?.attributedText = attributedString
+        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        
         return cell
     }
-    */
+    
 
     /*
     // Override to support conditional editing of the table view.
