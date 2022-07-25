@@ -26,6 +26,17 @@ class TableViewController: UITableViewController, UITextFieldDelegate {
             }
             textField.text = ""
             textField.placeholder = "Add new task"
+            
+            for i in 0..<AppData.tasks.count{
+                let task = AppData.tasks[i]
+                if task.name.lowercased() == newTaskName.lowercased(){
+                    var refreshedTask = task
+                    refreshedTask.status = false
+                    self.tableView.reloadData()
+                    return true
+                }
+            }
+            
             let newTask = Task(name: newTaskName, status: false)
             AppData.tasks.append(newTask)
             self.tableView.beginUpdates()
