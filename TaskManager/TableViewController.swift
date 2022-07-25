@@ -13,6 +13,31 @@ class TableViewController: UITableViewController, UITextFieldDelegate {
         self.tableView.tableHeaderView = headerView
         self.addNewTask.delegate = self
     }
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.placeholder = nil
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        if let newTaskName = textField.text{
+            if newTaskName == ""{
+                textField.placeholder = "Add new task"
+                return true
+            }
+            textField.text = ""
+            textField.placeholder = "Add new task"
+            let newTask = Task(name: newTaskName, status: false)
+            AppData.tasks.append(newTask)
+            self.tableView.beginUpdates()
+            let newIndexPath = IndexPath(row: AppData.tasks.count-1, section: 0)
+            self.tableView.insertRows(at: [newIndexPath], with: UITableView.RowAnimation.right)
+            self.tableView.endUpdates()
+            return true
+        }else{
+            return false
+        }
+        
+    }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return AppData.tasks.count
