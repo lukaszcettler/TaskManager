@@ -5,14 +5,32 @@ class TableViewController: UITableViewController, UITextFieldDelegate {
     @IBOutlet var headerView: UIView!
     @IBOutlet weak var addNewTask: UITextField!
     
+    var activeTasks: [Task] = []
+    var doneTasks: [Task] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         AppData.addData()
+        separateTasks()
+        
         self.tableView.tableHeaderView = headerView
         self.addNewTask.delegate = self
+        self.addNewTask.autocapitalizationType = UITextAutocapitalizationType.words
     }
+    
+    func separateTasks(){
+        
+        for task in AppData.tasks{
+            if task.status{
+                doneTasks.append(task)
+            }else{
+                activeTasks.append(task)
+            }
+        }
+        
+    }
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.placeholder = nil
     }
@@ -49,15 +67,38 @@ class TableViewController: UITableViewController, UITextFieldDelegate {
         }
         
     }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0{
+            return "Active Tasks"
+        }else{
+            return "Finished Tasks"
+        }
+    }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return AppData.tasks.count
+        if section == 0{
+            return activeTasks.count
+        }else{
+            return doneTasks.count
+        }
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell_id", for: indexPath)
-        let simpleTask = AppData.tasks[indexPath.row]
+        
+        var simpleTask = Task()
+        
+        if indexPath.section == 0{
+            simpleTask = activeTasks[indexPath.row]
+        }else{
+            simpleTask = doneTasks[indexPath.row]
+        }
         
         let attributedString = NSMutableAttributedString(string: simpleTask.name)
         
