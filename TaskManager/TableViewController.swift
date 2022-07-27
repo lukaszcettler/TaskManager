@@ -57,8 +57,9 @@ class TableViewController: UITableViewController, UITextFieldDelegate {
             
             let newTask = Task(name: newTaskName, status: false)
             AppData.tasks.append(newTask)
+            activeTasks.append(newTask)
             self.tableView.beginUpdates()
-            let newIndexPath = IndexPath(row: AppData.tasks.count-1, section: 0)
+            let newIndexPath = IndexPath(row: activeTasks.count-1, section: 0)
             self.tableView.insertRows(at: [newIndexPath], with: UITableView.RowAnimation.right)
             self.tableView.endUpdates()
             return true
@@ -155,7 +156,24 @@ class TableViewController: UITableViewController, UITextFieldDelegate {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle != UITableViewCell.EditingStyle.delete {return}
-        AppData.tasks.remove(at: indexPath.row)
+        
+        var task = Task()
+        if indexPath.section == 0{
+            task = activeTasks[indexPath.row]
+            activeTasks.remove(at: indexPath.row)
+        }else{
+            task = doneTasks[indexPath.row]
+            doneTasks.remove(at: indexPath.row)
+        }
+        
+        for i in 0..<AppData.tasks.count{
+            let taskInAppData = AppData.tasks[i]
+            if (taskInAppData.name == task.name){
+                AppData.tasks.remove(at: i)
+                break
+            }
+        }
+        
         tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.left)
     }
 }
