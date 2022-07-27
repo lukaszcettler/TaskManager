@@ -119,10 +119,34 @@ class TableViewController: UITableViewController, UITextFieldDelegate {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var selectedTask = AppData.tasks[indexPath.row]
-        selectedTask.status = !selectedTask.status
-        AppData.tasks[indexPath.row] = selectedTask
-        self.tableView.reloadData()
+        
+        var task = Task()
+        if indexPath.section == 0{
+            task = activeTasks[indexPath.row]
+            task.status = true
+            activeTasks.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.left)
+            doneTasks.append(task)
+            let newIndexPath = IndexPath(row: doneTasks.count - 1, section: 1)
+            tableView.insertRows(at: [newIndexPath], with: UITableView.RowAnimation.right)
+        }else{
+            task = doneTasks[indexPath.row]
+            task.status = false
+            doneTasks.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.left)
+            activeTasks.append(task)
+            let newIndexPath = IndexPath(row: activeTasks.count - 1, section: 0)
+            tableView.insertRows(at: [newIndexPath], with: UITableView.RowAnimation.right)
+        }
+        
+        for i in 0..<AppData.tasks.count{
+            let taskInAppData = AppData.tasks[i]
+            if (taskInAppData.name == task.name){
+                AppData.tasks[i] = task
+            }
+             
+        }
+   
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
